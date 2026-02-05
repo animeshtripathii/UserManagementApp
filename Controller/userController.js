@@ -1,13 +1,10 @@
 import users from '../db/users.js';
+import { userService } from '../services/user.service.js';
 
 const createUser = async (req, res) => {
     try {
         const { name, email } = req.body;
-        if (!name || !email) {
-            throw new Error('Name and Email are required');
-        }
-        const newUser = { id: Date.now().toString(), name, email };
-        users.push(newUser);
+        const newUser = userService(name, email);
         res.status(201).json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -70,7 +67,6 @@ const deleteUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        // Reads from BODY because route is POST
         const { id } = req.body; 
         const user = users.find(user => user.id === id);
         if (!user) throw new Error('User not found');

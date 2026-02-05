@@ -12,7 +12,6 @@ export const checkAuth = (req, res, next) => {
 }
 
 export const verifyToken = (req, res, next) => {
-    // 1. Get header
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
         return res.status(401).json({ error: 'Access Denied: No Authorization Header' });
