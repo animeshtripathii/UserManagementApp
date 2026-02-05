@@ -17,17 +17,11 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email } = req.body;
-        
         const userIndex = users.findIndex(user => user.id === id);
-        if (userIndex === -1) {
-            throw new Error('User not found');
-        }
+        if (userIndex === -1) throw new Error('User not found');
+        
         for (const key in req.body) {
-            if (key === 'id') {
-                continue;
-            }
-            users[userIndex][key] = req.body[key];
+            if (key !== 'id') users[userIndex][key] = req.body[key];
         }
         res.status(200).json(users[userIndex]);
     } catch (error) {
@@ -47,23 +41,13 @@ const updatePartialUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email } = req.body;
-
         const userIndex = users.findIndex(user => user.id === id);
 
-        if (userIndex === -1) {
-            throw new Error('User not found');
-        }
+        if (userIndex === -1) throw new Error('User not found');
+        if (!name && !email) throw new Error('Name or Email required');
 
-        if (!name && !email) {
-            throw new Error('At least one field (name or email) is required for partial update');
-        }
-
-        if (name) {
-            users[userIndex].name = name;
-        }
-        if (email) {
-            users[userIndex].email = email;
-        }
+        if (name) users[userIndex].name = name;
+        if (email) users[userIndex].email = email;
 
         res.status(200).json(users[userIndex]);
     } catch (error) {
@@ -75,9 +59,8 @@ const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
         const userIndex = users.findIndex(user => user.id === id);
-        if (userIndex === -1) {
-            throw new Error('User not found');
-        }
+        if (userIndex === -1) throw new Error('User not found');
+        
         users.splice(userIndex, 1);
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
@@ -87,11 +70,11 @@ const deleteUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const { id } = req.body;
+        // Reads from BODY because route is POST
+        const { id } = req.body; 
         const user = users.find(user => user.id === id);
-        if (!user) {
-            throw new Error('User not found');
-        }
+        if (!user) throw new Error('User not found');
+        
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ error: error.message });
