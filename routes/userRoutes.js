@@ -1,15 +1,27 @@
 import express from 'express';
-import { createUser, updateUser, getAllUsers, deleteUser, updatePartialUser, getUserById } from '../Controller/userController.js';
-import { checkAuth, validUserId, checkById, verifyToken } from '../middleware/auth.js';
-import { validateCreateUserDTO } from '../DTO/user.dto.js';
+import { 
+    createUser, 
+    updateUser, 
+    getAllUsers, 
+    deleteUser, 
+    updatePartialUser, 
+    getUserById,
+    getUsersByStatus,
+    getUsersByActiveStatus,
+} from '../Controller/userController.js';
 
 const router = express.Router();
 
-router.get('/get', checkAuth, getAllUsers);
-router.post('/getbyid', verifyToken, checkById, getUserById);
-router.post('/add', validateCreateUserDTO, createUser);
-router.put('/update/:id', validUserId, updateUser);
-router.patch('/update/:id', validUserId, updatePartialUser);
-router.delete('/delete/:id', validUserId, deleteUser);
+router.get('/get', getAllUsers); 
+router.get('/status/:isActive', getUsersByStatus); 
+router.post('/getbyid', getUserById);
+router.post('/add', createUser);
+router.patch('/update', updateUser);
+router.patch('/update/:id', updatePartialUser);
+router.delete('/delete', deleteUser);
+router.get('/isactive', getUsersByActiveStatus); 
+
+
+// REMOVED: getPost and addPost (They belong in postRoutes!)
 
 export default router;
